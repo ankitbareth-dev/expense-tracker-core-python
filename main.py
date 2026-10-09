@@ -1,9 +1,10 @@
 from validator import validate_choice
-from transactions import add_transaction,view_all_transations,view_summary,delete_transaction,export_transactions_to_csv
+import transactions
 
-def menu():
+def main():
     while True:
         print("\n=== Expense Tracker ===")
+        print()
         print("1. Add transaction")
         print("2. View all transaction")
         print("3. View summary")
@@ -12,24 +13,24 @@ def menu():
         print("6. Exit")
         try:
             print()
-            user_input : int = int(input("Choose an option: "))
+            user_input : int = int(input("Choose an option: ").strip())
             print()
             if validate_choice(user_input, list(range(1,7))):
                 match user_input:
                     case 1:
-                        add_transaction()
+                        transactions.add_transaction()
                         continue
                     case 2:
-                        view_all_transations()
+                        transactions.view_all_transations()
                         continue
                     case 3:
-                        view_summary()
+                        transactions.view_summary()
                         continue
                     case 4:
-                        delete_transaction()
+                        transactions.delete_transaction()
                         continue
                     case 5:
-                        export_transactions_to_csv()
+                        transactions.export_transactions_to_csv()
                         continue
             else:
                 print("Error: Please choose between 1 to 6")
@@ -40,4 +41,4 @@ def menu():
             continue
         if user_input == 6:
             break
-menu()
+main()

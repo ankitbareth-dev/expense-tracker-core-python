@@ -2,7 +2,11 @@ import uuid
 from functools import reduce
 import os
 import csv
+import validator
+import datetime
 
+
+allowed_transaction_type = ("income","expense")
 
 transactions = [
     {
@@ -47,16 +51,28 @@ transactions = [
     }
 ]
 
-allowed_transaction_type = ["income","expense"]
+
 
 def add_transaction():
     while True:
-        transaction_type = input("Enter transaction type (income/expense): ").strip()
-        if transaction_type not in allowed_transaction_type:
-            print("Error :  Enter a valid transaction or check spelling")
-            continue
-        else:
-            break
+        print("1. Income")
+        print("2. Expense")
+        print()
+        try:
+          
+            transaction_type = int(input("Enter transaction type : ").strip())
+           
+            if not validator.validate_choice(transaction_type,list(range(1,3))):
+                print()
+                print("Error: Please enter 1 or 2 only")
+                print()
+                continue
+            else:
+                break
+        except ValueError:
+            print()
+            print("Error : Enter a valid option")
+            print()
     while True:
         try:  
             amount = float(input("Enter amount: ").strip())
@@ -70,12 +86,19 @@ def add_transaction():
             continue
         
     category = input("Enter category: ").strip()
-    date = input("Enter date (YYYY-MM-DD): ").strip()
+    while True:
+        date = input("Enter date (DD/MM/YYYY): ").strip()
+
+        try:
+            datetime.datetime.strptime(date, "%d/%m/%Y")
+            break
+        except ValueError:
+            print("Error: Enter a valid date in DD/MM/YYYY format.")
     description = input("Enter description: ").strip()
 
     new_expense = {}
     new_expense["id"] = str(uuid.uuid4())
-    new_expense["transaction_type"] = transaction_type
+    new_expense["transaction_type"] = allowed_transaction_type[transaction_type-1]
     new_expense["amount"] = amount
     new_expense["category"] = category
     new_expense["date"] = date
@@ -85,13 +108,25 @@ def add_transaction():
 
     print("Expense added sucessfully")
     print()
-    print(transactions[0])
     return
 
 def view_all_transations():
-    for expense in transactions:
-        print(expense)
-    return
+    print("=" * 60)
+    print("             ALL TRANSACTIONS")
+    print("=" * 60)
+
+    if not transactions:
+        print("No transactions found.")
+        return
+
+    for index, transaction in enumerate(transactions, start=1):
+        print(f"\nTransaction #{index}")
+        print(f"Type:        {transaction['transaction_type'].title()}")
+        print(f"Amount:      ₹{transaction['amount']:,.2f}")
+        print(f"Category:    {transaction['category']}")
+        print(f"Date:        {transaction['date']}")
+        print(f"Description: {transaction['description']}")
+        print("-" * 60)
 
 
 def get_total_income():
@@ -145,12 +180,19 @@ def delete_transaction():
         )
         print("-" * 50)
 
-    deleting_id = int(input("Enter transaction ID to delete: "))
-    actual_id = transactions[deleting_id-1]["id"]
-    transactions = [transaction for transaction in transactions if transaction["id"] != actual_id]
-    print()
-    print("Transaction Deleted Sucessfully")
-    return
+    while True:
+        try:
+            deleting_id = int(input("Enter transaction ID to delete: "))
+            actual_id = transactions[deleting_id-1]["id"]
+            transactions = [transaction for transaction in transactions if transaction["id"] != actual_id]
+            print()
+            print("Transaction Deleted Sucessfully")
+            return
+        except ValueError:
+            print("Error: Please select a  valid given choises")
+            continue
+        except IndexError:
+            print("Error: Please select a valid id")
 
 
 def export_transactions_to_csv():
