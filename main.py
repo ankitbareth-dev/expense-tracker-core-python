@@ -2,7 +2,7 @@ import uuid
 from functools import reduce
 allowed_transaction_type = ["income","expense"]
 
-expenses = [
+transactions = [
     {
         "id": str(uuid.uuid4()),
         "transaction_type": "income",
@@ -85,29 +85,29 @@ def add_transaction():
     new_expense["date"] = date
     new_expense["description"] = description
 
-    expenses.append(new_expense)
+    transactions.append(new_expense)
 
     print("Expense added sucessfully")
     print()
-    print(expenses[0])
+    print(transactions[0])
     return
 
 def view_all_transations():
-    for expense in expenses:
+    for expense in transactions:
         print(expense)
     return
 def get_total_income():
-    result = reduce(lambda a,b: a+b, [expense["amount"] for expense in expenses if expense["transaction_type"] == "income"  ],0)
+    result = reduce(lambda a,b: a+b, [expense["amount"] for expense in transactions if expense["transaction_type"] == "income"  ],0)
     return result
 
 
 def get_total_expenses():
-    result = reduce(lambda a,b: a+b,[expense["amount"] for expense in expenses if expense["transaction_type"] == "expense"],0)
+    result = reduce(lambda a,b: a+b,[expense["amount"] for expense in transactions if expense["transaction_type"] == "expense"],0)
     return result
 
 def get_expense_by_category():
     result = {}
-    for expense in expenses:
+    for expense in transactions:
         if expense["category"] not in result:
            result[expense["category"]] = expense["amount"]
         else:
@@ -124,12 +124,33 @@ def view_summary():
     print("Total Expenses:     ", total_expenses)
     print("Current Balance:    ",total_income-total_expenses)
     print()
-    print("Total Transactions: ",len(expenses))
+    print("Total Transactions: ",len(transactions))
     print()
     print("====== Expense by Category ======")
     print()
     for cat in expense_by_category:
         print(f"{cat}: ₹{expense_by_category[cat]:,.2f}")
+    return
+
+def delete_transaction():
+    global transactions
+    print("====== Select Transaction to Delete ======")
+
+    for index, transaction in enumerate(transactions):
+        print(
+            f"ID: {index+1}\n"
+            f"Category: {transaction['category']} | "
+            f"Amount: ₹{transaction['amount']:,.2f} | "
+            f"Date: {transaction['date']}\n"
+            f"Description: {transaction['description']}"
+        )
+        print("-" * 50)
+
+    deleting_id = int(input("Enter transaction ID to delete: "))
+    actual_id = transactions[deleting_id-1]["id"]
+    transactions = [transaction for transaction in transactions if transaction["id"] != actual_id]
+    print()
+    print("Transaction Deleted Sucessfully")
     return
     
 
@@ -156,6 +177,9 @@ def menu():
                         continue
                     case 3:
                         view_summary()
+                        continue
+                    case 4:
+                        delete_transaction()
                         continue
             else:
                 print("Error: Please choose between 1 to 6")
