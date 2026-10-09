@@ -1,0 +1,10 @@
+def menu():
+    print("=== Expense Tracker ===")
+    print("1. Add transaction")
+    print("2. View all transaction")
+    print("3. View summry")
+    print("4. Delete transaction")
+    print("5. Export transaction to CSV")
+    print("6. Exit")
+    user_input : int = int(input("Choose an option: "))
+menu()
