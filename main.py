@@ -1,4 +1,6 @@
 import uuid
+import os
+import csv
 from functools import reduce
 allowed_transaction_type = ["income","expense"]
 
@@ -152,6 +154,37 @@ def delete_transaction():
     print()
     print("Transaction Deleted Sucessfully")
     return
+
+
+def export_transactions_to_csv():
+    file_exists = os.path.exists("transactions.csv")
+    file_is_empty = file_exists and os.path.getsize("transactions.csv") == 0
+
+    try:
+        with open("transactions.csv", "a", newline="") as file:
+            writer = csv.DictWriter(
+                file,
+                fieldnames=[
+                    "id",
+                    "transaction_type",
+                    "amount",
+                    "category",
+                    "date",
+                    "description"
+                ]
+            )
+
+            if not file_exists or file_is_empty:
+                writer.writeheader()
+
+            writer.writerows(transactions)
+
+        print("Transactions exported successfully.")
+
+    except OSError as error:
+        print(f"Error exporting transactions: {error}")
+
+
     
 
 def menu():
@@ -180,6 +213,9 @@ def menu():
                         continue
                     case 4:
                         delete_transaction()
+                        continue
+                    case 5:
+                        export_transactions_to_csv()
                         continue
             else:
                 print("Error: Please choose between 1 to 6")
