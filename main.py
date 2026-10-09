@@ -1,3 +1,4 @@
+import uuid
 allowed_transaction_type = ["income","expense"]
 
 expanses = []
@@ -35,7 +36,7 @@ def add_transaction():
     description = input("Enter description: ").strip()
 
     new_expense = {}
-        
+    new_expense["id"] = str(uuid.uuid4())
     new_expense["transaction_type"] = transaction_type
     new_expense["amount"] = amount
     new_expense["category"] = category
@@ -45,6 +46,7 @@ def add_transaction():
     expanses.append(new_expense)
 
     print("Expense added sucessfully")
+    print(expanses[0])
     return
         
 
