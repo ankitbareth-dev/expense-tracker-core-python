@@ -1,7 +1,7 @@
 import uuid
 allowed_transaction_type = ["income","expense"]
 
-expanses = []
+expenses = []
 
 def validate_choice(choice: int,allowed_choices : list[int]) -> bool:
     if choice in allowed_choices:
@@ -43,13 +43,17 @@ def add_transaction():
     new_expense["date"] = date
     new_expense["description"] = description
 
-    expanses.append(new_expense)
+    expenses.append(new_expense)
 
     print("Expense added sucessfully")
-    print(expanses[0])
+    print()
+    print(expenses[0])
     return
-        
 
+def view_all_transations():
+    for expense in expenses:
+        print(expense)
+    return
 
 def menu():
     while True:
@@ -68,6 +72,9 @@ def menu():
                 match user_input:
                     case 1:
                         add_transaction()
+                        continue
+                    case 2:
+                        view_all_transations()
                         continue
             else:
                 print("Error: Please choose between 1 to 6")
